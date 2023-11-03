@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import { ChangeEvent, useState } from "react";
-import { Todo, useTodos } from "@/src/views/Todos/hooks/useTodos";
 import { getUuid } from "@/src/views/Todos/utils";
+import { Todo, useTodosStore } from "@/src/store/todos";
 
 // todos 데이터 저장 공간 - 페이지 컴포넌트, 로컬상태로 관리 (useState) - 문제점? 다른 페이지 다녀오면 데이터가 초기화 됨
 // 글로벌 스테이트 - zustand 사용
@@ -12,14 +12,21 @@ import { getUuid } from "@/src/views/Todos/utils";
 // editTodo - todo 수정
 
 const Todos = () => {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-
-  const { todos, addTodo, removeTodo, editTodo } = useTodos();
+  const {
+    todos,
+    title,
+    description,
+    addTodo,
+    removeTodo,
+    editTodo,
+    updateState,
+  } = useTodosStore();
 
   const reset = () => {
-    setTitle("");
-    setDescription("");
+    updateState({
+      title: "",
+      description: "",
+    });
   };
   const handleTodoAdd = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -55,13 +62,13 @@ const Todos = () => {
           <input
             type="text"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e) => updateState({ title: e.target.value })}
             placeholder="할 일을 입력해주세요"
           />
           <input
             type="text"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={(e) => updateState({ description: e.target.value })}
             placeholder="설명을 입력해주세요"
           />
           <button type="submit">확인</button>
